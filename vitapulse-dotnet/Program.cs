@@ -51,11 +51,20 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 
 builder.Services.AddAuthorization();
 builder.Services.AddScoped<TokenService>();
-builder.Services.AddCors(options => options.AddPolicy("Angular", policy =>
-    policy.WithOrigins("http://localhost:4200", "https://localhost:4200")
-          .AllowAnyHeader()
-          .AllowAnyMethod()));
-
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("VitaPulsePolicy", policy =>
+    {
+        policy
+            .WithOrigins(
+                "https://final-vitapulse.vercel.app",
+                "http://localhost:4200",
+                "https://localhost:4200"
+            )
+            .AllowAnyHeader()
+            .AllowAnyMethod();
+    });
+});
 var app = builder.Build();
 
 await using (var scope = app.Services.CreateAsyncScope())
