@@ -8,7 +8,7 @@ type CurrentUser = { id?: number; email: string; displayName: string };
 @Injectable({ providedIn: 'root' })
 export class ApiService {
   // Keep this URL aligned with Properties/launchSettings.json and the backend launch script.
-  readonly baseUrl = 'http://localhost:5080/api';
+  readonly baseUrl = 'https://vitapulse.runasp.net/api';
   readonly user = signal<CurrentUser | null>(this.readUser());
   readonly toast = signal('');
   private sessionValidated = false;
