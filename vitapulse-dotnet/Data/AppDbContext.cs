@@ -1,0 +1,3 @@
+using FitnessTracker.Api.Models;using Microsoft.EntityFrameworkCore;
+namespace FitnessTracker.Api.Data;
+public sealed class AppDbContext(DbContextOptions<AppDbContext> options):DbContext(options){public DbSet<User> Users=>Set<User>();public DbSet<Exercise> Exercises=>Set<Exercise>();public DbSet<Workout> Workouts=>Set<Workout>();protected override void OnModelCreating(ModelBuilder b){b.Entity<User>().HasIndex(x=>x.Email).IsUnique();b.Entity<Workout>().HasOne(x=>x.User).WithMany(x=>x.Workouts).HasForeignKey(x=>x.UserId).OnDelete(DeleteBehavior.Cascade);b.Entity<Workout>().HasOne(x=>x.Exercise).WithMany().HasForeignKey(x=>x.ExerciseId).OnDelete(DeleteBehavior.Restrict);}}

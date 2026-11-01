@@ -1,0 +1,8 @@
+using System.Security.Claims;using FitnessTracker.Api.Data;using FitnessTracker.Api.DTOs;using FitnessTracker.Api.Models;using FitnessTracker.Api.Services;using Microsoft.AspNetCore.Authorization;using Microsoft.AspNetCore.Mvc;using Microsoft.EntityFrameworkCore;
+namespace FitnessTracker.Api.Controllers;
+[ApiController][Route("api/[controller]")]
+public sealed class AuthController(AppDbContext db,TokenService tokens):ControllerBase{
+ [HttpPost("register")][AllowAnonymous] public async Task<ActionResult<AuthResponse>> Register(RegisterRequest request){var email=request.Email.Trim().ToLowerInvariant();if(await db.Users.AnyAsync(u=>u.Email==email))return Conflict(new{message="An account with this email already exists."});var user=new User{DisplayName=request.DisplayName.Trim(),Email=email,PasswordHash=BCrypt.Net.BCrypt.HashPassword(request.Password)};db.Users.Add(user);await db.SaveChangesAsync();return Ok(new AuthResponse(tokens.Create(user),user.Email,user.DisplayName));}
+ [HttpPost("login")][AllowAnonymous] public async Task<ActionResult<AuthResponse>> Login(LoginRequest request){var email=request.Email.Trim().ToLowerInvariant();var user=await db.Users.SingleOrDefaultAsync(u=>u.Email==email);if(user is null||!BCrypt.Net.BCrypt.Verify(request.Password,user.PasswordHash))return Unauthorized(new{message="Email or password is incorrect."});return Ok(new AuthResponse(tokens.Create(user),user.Email,user.DisplayName));}
+ [HttpGet("me")][Authorize] public async Task<IActionResult> Me(){var id=User.FindFirstValue(ClaimTypes.NameIdentifier);if(!int.TryParse(id,out var userId))return Unauthorized();var user=await db.Users.FindAsync(userId);return user is null?NotFound():Ok(new{user.Id,user.Email,user.DisplayName});}
+}

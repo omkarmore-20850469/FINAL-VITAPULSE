@@ -1,0 +1,23 @@
+@baseUrl = http://localhost:5080
+
+### Health
+GET {{baseUrl}}/health
+
+### Register a user (replace the email if it already exists)
+POST {{baseUrl}}/api/auth/register
+Content-Type: application/json
+
+{
+  "displayName": "VitaPulse User",
+  "email": "user@example.com",
+  "password": "StrongPass123"
+}
+
+### Login
+POST {{baseUrl}}/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "user@example.com",
+  "password": "StrongPass123"
+}

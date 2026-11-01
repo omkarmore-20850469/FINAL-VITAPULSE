@@ -1,0 +1,15 @@
+VitaPulse frontend repair notes
+
+Fixes made for the build log reported on 2026-10-28:
+1. Restored src/styles.css from the last valid UI package. The previous file incorrectly contained Angular TypeScript component code, causing CSS parser warnings and unterminated-string errors.
+2. Corrected TrainingComponent template references to ActiveWorkoutSession.exercise.name, .exercise.duration and .exercise.calories. ActiveWorkoutSession stores the selected Exercise under the `exercise` property.
+3. Corrected the progress calculation to read duration from active().exercise.duration.
+4. Removed the unused RouterLink import from TrainingComponent's standalone imports (RouterLink remains imported in this file for Dashboard and History templates).
+5. Re-added floating workout card styling and high-contrast text styling for the Balanced theme.
+
+After extracting, from vitapulse-angular20 run:
+  npm install
+  npm run build
+  npm start
+
+The project was not built in this environment because npm registry access/dependency installation was unavailable here. If the build reports a new error, share the full first error block so it can be fixed precisely.

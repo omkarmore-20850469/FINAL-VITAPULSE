@@ -1,0 +1,3 @@
+using System.Text.Json;
+namespace FitnessTracker.Api.Services;
+public sealed class ErrorHandlingMiddleware(RequestDelegate next,ILogger<ErrorHandlingMiddleware> logger){public async Task InvokeAsync(HttpContext context){try{await next(context);}catch(Exception ex){logger.LogError(ex,"Unhandled API error");if(context.Response.HasStarted)throw;context.Response.Clear();context.Response.StatusCode=StatusCodes.Status500InternalServerError;context.Response.ContentType="application/problem+json";await context.Response.WriteAsync(JsonSerializer.Serialize(new{title="An unexpected error occurred.",status=500,message="Please try again. If the problem continues, contact support."}));}}}
